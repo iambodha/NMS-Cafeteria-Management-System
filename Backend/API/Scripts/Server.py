@@ -8,10 +8,10 @@ from collections import defaultdict
 app = FastAPI()
 
 BERLIN_TZ = pytz.timezone('Europe/Berlin')
-today = date.today()
+today = datetime.now(BERLIN_TZ).date()
 
 start_time = BERLIN_TZ.localize(datetime.combine(today, time(8, 0)))
-end_time = BERLIN_TZ.localize(datetime.combine(today, time(18, 0)))
+end_time = BERLIN_TZ.localize(datetime.combine(today, time(15, 0)))
 TIME_SLOTS = []
 
 current_time = start_time
@@ -49,7 +49,7 @@ def get_time_slot(user_name: str = Query(..., alias="q")):
     if user_assignments[user_name] >= 2:
         return {"success": False, "message": f"Please do not spam this service, {user_name}."}
 
-    now = BERLIN_TZ.localize(datetime.now())
+    now = datetime.now(BERLIN_TZ)
     next_slot = None
 
     for start, end in TIME_SLOTS:
@@ -88,4 +88,4 @@ async def clear_user_assignments_every_60_minutes():
         await clear_user_assignments()
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=5000)
+    uvicorn.run(app, host="127.0.0.1", port=5000)
