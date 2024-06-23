@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Query
+from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from datetime import datetime, date, time, timedelta
 import pytz
@@ -6,6 +7,14 @@ import asyncio
 from collections import defaultdict
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins for simplicity during development
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 BERLIN_TZ = pytz.timezone('Europe/Berlin')
 today = datetime.now(BERLIN_TZ).date()
